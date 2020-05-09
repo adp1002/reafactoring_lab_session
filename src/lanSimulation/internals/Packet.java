@@ -59,7 +59,7 @@ Construct a <em>Packet</em> with given #message, #origin and #receiver.
 		destination_ = destination;
 	}
 	
-	public boolean printDocument (Node printer, Network network, Writer report) {
+	public boolean printDocument (Node printer, Writer report) {
 		String author = "Unknown";
 		String title = "Untitled";
 		int startPos = 0, endPos = 0;
@@ -67,15 +67,15 @@ Construct a <em>Packet</em> with given #message, #origin and #receiver.
 		if (printer.type_ == Node.PRINTER) {
 			try {
 				if (message_.startsWith("!PS")) {
-					author = network.findString(this, author, 7, "author:");
-					title = network.findString(this, title, 6, "title:");
-					network.writeAccounting(report, author, title, "Postscript");
+					author = findString(this, author, 7, "author:");
+					title = findString(this, title, 6, "title:");
+					writeAccounting(report, author, title, "Postscript");
 
 				} else {
 					title = "ASCII DOCUMENT";
 					if (message_.length() >= 16) {
 						author = message_.substring(8, 16);};
-						network.writeAccounting(report, author, title, "ASCII Print");
+						writeAccounting(report, author, title, "ASCII Print");
 
 				};
 			} catch (IOException exc) {
@@ -91,6 +91,27 @@ Construct a <em>Packet</em> with given #message, #origin and #receiver.
 			};
 			return false;
 		}
+	}
+	
+	private String findString(Packet document, String occurence, int offset, String type) {
+		int startPos;
+		int endPos;
+		startPos = document.message_.indexOf(type);
+		if (startPos >= 0) {
+			endPos = document.message_.indexOf(".", startPos + offset);
+			if (endPos < 0) {endPos = document.message_.length();};
+			occurence = document.message_.substring(startPos + offset, endPos);};
+		return occurence;
+	}
+	
+	private void writeAccounting(Writer report, String author, String title, String type) throws IOException {
+		report.write("\tAccounting -- author = '");
+		report.write(author);
+		report.write("' -- title = '");
+		report.write(title);
+		report.write("'\n");
+		report.write(">>> " + type + " job delivered.\n\n");
+		report.flush();
 	}
 
 }

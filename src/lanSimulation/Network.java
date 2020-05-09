@@ -241,7 +241,7 @@ Therefore #receiver sends a packet across the token ring network, until either
 		};
 
 		if (packet.destination_.equals(currentNode.name_)) {
-			result = packet.printDocument(currentNode, this, report);
+			result = packet.printDocument(currentNode, report);
 		} else {
 			try {
 				report.write(">>> Destinition not found, print job cancelled.\n\n");
@@ -256,26 +256,7 @@ Therefore #receiver sends a packet across the token ring network, until either
 	}
 
 
-	public String findString(Packet document, String occurence, int offset, String type) {
-		int startPos;
-		int endPos;
-		startPos = document.message_.indexOf(type);
-		if (startPos >= 0) {
-			endPos = document.message_.indexOf(".", startPos + offset);
-			if (endPos < 0) {endPos = document.message_.length();};
-			occurence = document.message_.substring(startPos + offset, endPos);};
-		return occurence;
-	}
-
-	public void writeAccounting(Writer report, String author, String title, String type) throws IOException {
-		report.write("\tAccounting -- author = '");
-		report.write(author);
-		report.write("' -- title = '");
-		report.write(title);
-		report.write("'\n");
-		report.write(">>> " + type + " job delivered.\n\n");
-		report.flush();
-	}
+	
 
 	/**
 Return a printable representation of #receiver.
