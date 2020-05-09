@@ -3,11 +3,11 @@ package lanSimulation.internals;
 public class WorkStation extends Node {
 
 	public WorkStation(String name) {
-		super(Node.WORKSTATION, name);
+		super(name);
 	}
 	
 	public WorkStation(String name, Node nextNode) {
-		super(Node.WORKSTATION, name, nextNode);
+		super(name, nextNode);
 	}
 	@Override
 	public void printOn(StringBuffer buf) {
