@@ -241,7 +241,7 @@ Therefore #receiver sends a packet across the token ring network, until either
 		};
 
 		if (packet.destination_.equals(currentNode.name_)) {
-			result = printDocument(currentNode, packet, report);
+			result = packet.printDocument(currentNode, this, report);
 		} else {
 			try {
 				report.write(">>> Destinition not found, print job cancelled.\n\n");
@@ -256,41 +256,7 @@ Therefore #receiver sends a packet across the token ring network, until either
 	}
 
 
-	private boolean printDocument (Node printer, Packet document, Writer report) {
-		String author = "Unknown";
-		String title = "Untitled";
-		int startPos = 0, endPos = 0;
-
-		if (printer.type_ == Node.PRINTER) {
-			try {
-				if (document.message_.startsWith("!PS")) {
-					author = findString(document, author, 7, "author:");
-					title = findString(document, title, 6, "title:");
-					writeAccounting(report, author, title, "Postscript");
-
-				} else {
-					title = "ASCII DOCUMENT";
-					if (document.message_.length() >= 16) {
-						author = document.message_.substring(8, 16);};
-						writeAccounting(report, author, title, "ASCII Print");
-
-				};
-			} catch (IOException exc) {
-				// just ignore
-			};
-			return true;
-		} else {
-			try {
-				report.write(">>> Destinition is not a printer, print job cancelled.\n\n");
-				report.flush();
-			} catch (IOException exc) {
-				// just ignore
-			};
-			return false;
-		}
-	}
-
-	private String findString(Packet document, String occurence, int offset, String type) {
+	public String findString(Packet document, String occurence, int offset, String type) {
 		int startPos;
 		int endPos;
 		startPos = document.message_.indexOf(type);
@@ -301,7 +267,7 @@ Therefore #receiver sends a packet across the token ring network, until either
 		return occurence;
 	}
 
-	private void writeAccounting(Writer report, String author, String title, String type) throws IOException {
+	public void writeAccounting(Writer report, String author, String title, String type) throws IOException {
 		report.write("\tAccounting -- author = '");
 		report.write(author);
 		report.write("' -- title = '");
