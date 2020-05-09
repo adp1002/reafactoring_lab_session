@@ -282,6 +282,7 @@ Write a printable representation of #receiver on the given #buf.
 		Node currentNode = firstNode_;
 		do {
 			currentNode.printOn(buf);
+			buf.append(" -> ");
 			currentNode = send(currentNode);
 		} while (currentNode != firstNode_);
 		buf.append(" ... ");
