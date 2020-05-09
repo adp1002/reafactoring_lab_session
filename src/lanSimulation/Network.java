@@ -270,17 +270,9 @@ Therefore #receiver sends a packet across the token ring network, until either
 		if (printer.type_ == Node.PRINTER) {
 			try {
 				if (document.message_.startsWith("!PS")) {
-					startPos = document.message_.indexOf("author:");
-					if (startPos >= 0) {
-						endPos = document.message_.indexOf(".", startPos + 7);
-						if (endPos < 0) {endPos = document.message_.length();};
-						author = document.message_.substring(startPos + 7, endPos);};
-						startPos = document.message_.indexOf("title:");
-						if (startPos >= 0) {
-							endPos = document.message_.indexOf(".", startPos + 6);
-							if (endPos < 0) {endPos = document.message_.length();};
-							title = document.message_.substring(startPos + 6, endPos);};
-							writeAccounting(report, author, title, "Postscript");
+					author = findString(document, author, 7, "author:");
+					title = findString(document, title, 6, "title:");
+					writeAccounting(report, author, title, "Postscript");
 
 				} else {
 					title = "ASCII DOCUMENT";
@@ -302,6 +294,17 @@ Therefore #receiver sends a packet across the token ring network, until either
 			};
 			return false;
 		}
+	}
+
+	private String findString(Packet document, String occurence, int offset, String type) {
+		int startPos;
+		int endPos;
+		startPos = document.message_.indexOf(type);
+		if (startPos >= 0) {
+			endPos = document.message_.indexOf(".", startPos + offset);
+			if (endPos < 0) {endPos = document.message_.length();};
+			occurence = document.message_.substring(startPos + offset, endPos);};
+		return occurence;
 	}
 
 	private void writeAccounting(Writer report, String author, String title, String type) throws IOException {
